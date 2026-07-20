@@ -1,0 +1,27 @@
+services:
+  lubelogger:
+    image: ghcr.io/hargata/lubelogger:latest
+    container_name: lubelogger
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ}
+      - OpenIDConfig__Name=Pocket ID
+      - OpenIDConfig__ClientId=${LUBELOGGER_OIDC_CLIENT_ID}
+      - OpenIDConfig__ClientSecret=${LUBELOGGER_OIDC_CLIENT_SECRET}
+      - OpenIDConfig__AuthURL=https://id.apps.hematic.net/authorize
+      - OpenIDConfig__TokenURL=https://id.apps.hematic.net/api/oidc/token
+      - OpenIDConfig__UserInfoURL=https://id.apps.hematic.net/api/oidc/userinfo
+      - OpenIDConfig__RedirectURL=https://lube.apps.hematic.net/Login/RemoteAuth
+      - OpenIDConfig__Scope=openid email profile
+      - OpenIDConfig__UsePKCE=false
+      - OpenIDConfig__ValidateState=true
+      # Existing accounts only -- do NOT auto-create LubeLogger users from OIDC.
+      # Create the local account first, match its email to the Pocket ID user.
+      - OpenIDConfig__DisableRegistration=true
+      # Keep the normal login form available during the trial.
+      - OpenIDConfig__DisableRegularLogin=false
+    volumes:
+      - /volume1/containers/lubelogger/data:/App/data
+      - /volume1/containers/lubelogger/keys:/root/.aspnet/DataProtection-Keys
+    ports:
+      - 8080:8080
