@@ -5,6 +5,10 @@ services:
     restart: unless-stopped
     environment:
       - TZ=${TZ}
+      # Required for the Root/Super User specifically to be allowed to log in
+      # via OIDC -- separate from the OpenIDConfig__* block, which alone was
+      # not enough (root logins got sent with an empty client_id).
+      - EnableRootUserOIDC=true
       - OpenIDConfig__Name=Pocket ID
       - OpenIDConfig__ClientId=${LUBELOGGER_OIDC_CLIENT_ID}
       - OpenIDConfig__ClientSecret=${LUBELOGGER_OIDC_CLIENT_SECRET}
